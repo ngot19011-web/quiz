@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz over IJsberen en Klimaatverandering</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1E3A8A, #10B981);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+        .content-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <script>
+        function submitQuiz() {
+            const username = document.getElementById("username").value;
+            if (!username) {
+                alert("Voer een gebruikersnaam in!");
+                return;
+            }
+
+            const answers = document.querySelectorAll('input[type="radio"]:checked');
+            let score = 0;
+            answers.forEach(answer => {
+                if (answer.value === "correct") {
+                    score++;
+                }
+            });
+
+            // Sla de score en gebruikersnaam op
+            const userScore = { username, score };
+            let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+            leaderboard.push(userScore);
+            localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+            // Ga naar de scorepagina
+            window.location.href = "score.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const sections = document.querySelectorAll(".fade-in");
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</head>
+<body>
+    <header class="bg-primary text-white py-6 text-center shadow-lg">
+        <h1 class="text-5xl font-bold">Quiz over IJsberen en Klimaatverandering</h1>
+        <p class="text-xl">Test je kennis en help de ijsberen!</p>
+    </header>
+
+    <section class="max-w-4xl mx-auto mt-10 p-6 content-box fade-in">
+        <h2 class="text-3xl font-semibold text-accent">Quiz</h2>
+        <form id="quizForm">
+            <div class="mt-4">
+                <label for="username" class="block text-lg">Voer je gebruikersnaam in:</label>
+                <input type="text" id="username" class="w-full p-2 rounded text-black" required>
+            </div>
+
+            <p class="mt-4">1. Waarom is zee-ijs belangrijk voor ijsberen?</p>
+            <label><input type="radio" name="q1" value="correct"> Om te jagen op zeehonden</label><br>
+            <label><input type="radio" name="q1" value="wrong"> Om te zwemmen</label><br>
+            
+            <p class="mt-4">2. Wat is de grootste bedreiging voor ijsberen?</p>
+            <label><input type="radio" name="q2" value="correct"> Klimaatverandering</label><br>
+            <label><input type="radio" name="q2" value="wrong"> Jagers</label><br>
+            
+            <p class="mt-4">3. Hoe beïnvloedt klimaatverandering het zee-ijs?</p>
+            <label><input type="radio" name="q3" value="correct"> Het smelt sneller</label><br>
+            <label><input type="radio" name="q3" value="wrong"> Het wordt dikker</label><br>
+            
+            <p class="mt-4">4. Wat gebeurt er als ijsberen minder zee-ijs hebben?</p>
+            <label><input type="radio" name="q4" value="correct"> Ze vinden minder voedsel</label><br>
+            <label><input type="radio" name="q4" value="wrong"> Ze worden sterker</label><br>
+            
+            <p class="mt-4">5. Hoe kunnen we ijsberen helpen?</p>
+            <label><input type="radio" name="q5" value="correct"> Door de uitstoot van broeikasgassen te verminderen</label><br>
+            <label><input type="radio" name="q5" value="wrong"> Door meer ijsberen te fokken</label><br>
+            
+            <button type="button" class="mt-4 bg-accent text-white px-4 py-2 rounded shadow-md hover:bg-yellow-600 transition-all" onclick="submitQuiz()">Verzend Quiz</button>
+        </form>
+    </section>
+</body>
+</html>
